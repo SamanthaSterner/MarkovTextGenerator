@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,7 +14,7 @@ namespace MarkovTextGenerator
             Chain chain = new Chain();
 
             Console.WriteLine("Welcome to Marky Markov's Random Text Generator!");
-
+            /*
             Console.WriteLine("Enter some text I can learn from (enter single ! to finish): ");
 
             while (true)
@@ -27,6 +28,12 @@ namespace MarkovTextGenerator
 
                 chain.AddString(line);  // Let the chain process this string
             }
+            */
+            string[] lines = File.ReadAllLines(@"Files/Script.txt");
+            foreach (String s in lines)
+            {
+                chain.AddString(s);
+            }
 
             // Now let's update all the probabilities with the new data
             chain.UpdateProbabilities();
@@ -35,9 +42,22 @@ namespace MarkovTextGenerator
             Console.WriteLine("Done learning!  Now give me a word and I'll tell you what comes next.");
             Console.Write("> ");
 
+            String output = "";
             String word = Console.ReadLine();
-            String nextWord = chain.GetNextWord(word);
-            Console.WriteLine("I predict the next word will be " + nextWord);
-        }
+            while (true)
+            {
+                output += word + " ";
+                word = chain.GetNextWord(word);
+             
+                if (word == "")
+                {
+                    break;
+                }
+            }
+
+            output = output.Trim();
+            output = output.Substring(0, 1).ToUpper() + output.Substring(1) + ".";
+            Console.WriteLine(output);
+       }
     }
 }

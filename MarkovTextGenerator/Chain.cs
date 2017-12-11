@@ -38,8 +38,13 @@ namespace MarkovTextGenerator
 
         public void AddString (String sentence)
         {
-            // TODO: Break sentence up into word pairs
-            // TODO: Add each word pair to the chain
+            string[] list = sentence.Split(new char[] {' ', ',', '.', '!', '?'});
+
+            for (int i  = 0; i < list.Length - 1; i++)
+            {
+                AddPair( list[i], list[i + 1]); 
+            }
+            AddPair(list[list.Length - 1], "");
         }
 
         // Adds a pair of words to the chain that will appear in order
@@ -77,9 +82,16 @@ namespace MarkovTextGenerator
         {
             if (words.ContainsKey(word))
             {
-                double choice = 1.0 / (double)rand.Next(100000);
+                double choice = rand.NextDouble();
 
-                Console.WriteLine("I picked the number " + choice); 
+                double sum = 0;
+                for (int i = 0; i < words[word].Count; i++)
+                {
+                    sum += words[word][i].Probability;
+
+                    if (sum >= choice)
+                        return words[word][i].ToString();
+                }
             }
 
             return "idkbbq";
